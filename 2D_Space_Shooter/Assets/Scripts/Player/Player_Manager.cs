@@ -10,9 +10,10 @@ public class Player_Manager : MonoBehaviour {
     public GameObject cursor;
 
     private void Start() {
-    //   print(Camera.main.WorldToScreenPoint(transform.position).x);
+        print(bouncyTime);
     }
 
+    float lastPointAngle;
     void Update () {
 
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -27,7 +28,26 @@ public class Player_Manager : MonoBehaviour {
         float pointAngle = (180 / Mathf.PI) * Mathf.Atan2(opp, adj);
 
         //The goal is to make it overshoot a little but bounce back
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, pointAngle), Time.deltaTime * lookAtSpeed);
+        // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, pointAngle), Time.deltaTime * lookAtSpeed);
+        if (lastPointAngle != pointAngle) {
+            bouncyTime = 0;
+        }
 
+        float newAngle = bouncyAngleRotate(transform.localRotation.z * (360F / Mathf.PI), pointAngle, Time.deltaTime);
+        transform.rotation = Quaternion.Euler(0, 0, newAngle);
+        lastPointAngle = pointAngle;
 	}
+
+    float bouncyTime;
+    float bouncyAngleRotate(float initAngle, float finalAngle, float deltaAngle) {
+
+        if (bouncyTime <= 1) {
+            bouncyTime += deltaAngle;
+        }
+
+        float likeness = ((Mathf.Sin(6.2F * bouncyTime) * (1F - bouncyTime)) / (bouncyTime / 2F)) / 12.4F;
+        float angleDifference = initAngle - finalAngle;
+
+        return finalAngle + (angleDifference * likeness);
+    }
 }
