@@ -9,45 +9,59 @@ public class Player_Manager : MonoBehaviour {
 
     public GameObject cursor;
 
+    private Rigidbody2D rb2d;
+    private float shipBounds;
+
     private void Start() {
-        print(bouncyTime);
+        rb2d = GetComponent<Rigidbody2D>();
+
+        Camera cam = Camera.main; //87.5
+        shipBounds = Mathf.Abs(cam.ScreenToWorldPoint(new Vector3(50F, 0)).x);
     }
 
     float lastPointAngle;
     void Update () {
 
+        //Setting cursor position
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         cursor.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
 
-        //  Here I just imagine a triangle between the middle of the screen and the mouse
-        //  I use trig to find the angle and change that to the rotation, so that the
-        //  middle sprite points towards the mouse
+        //Setting camera position
+        Camera.main.transform.position = new Vector3(0, transform.position.y, -10);
+
+        //Clamping the bounds
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, -shipBounds, shipBounds);
+        transform.position = pos;
+
+        //Using trig to find the angle between two points (spaceship and mouse cursor)
         float adj = Input.mousePosition.x - (Camera.main.WorldToScreenPoint(transform.position).x);
         float opp = Input.mousePosition.y - (Camera.main.WorldToScreenPoint(transform.position).y);
 
         float pointAngle = (180 / Mathf.PI) * Mathf.Atan2(opp, adj);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, pointAngle - 90F), Time.deltaTime * lookAtSpeed);
 
-        //The goal is to make it overshoot a little but bounce back
-        // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, pointAngle), Time.deltaTime * lookAtSpeed);
-        if (lastPointAngle != pointAngle) {
-            bouncyTime = 0;
+        //WS + Mouse
+        /*
+        if (Input.GetKey(KeyCode.W)) {
+            rb2d.AddForce(transform.up * 5F);
         }
+        if (Input.GetKey(KeyCode.S)) {
+            rb2d.AddForce(Vector2.down * 5F);
+        }*/
 
-        float newAngle = bouncyAngleRotate(transform.localRotation.z * (360F / Mathf.PI), pointAngle, Time.deltaTime);
-        transform.rotation = Quaternion.Euler(0, 0, newAngle);
-        lastPointAngle = pointAngle;
-	}
-
-    float bouncyTime;
-    float bouncyAngleRotate(float initAngle, float finalAngle, float deltaAngle) {
-
-        if (bouncyTime <= 1) {
-            bouncyTime += deltaAngle;
+        //WASD Movement
+        if (Input.GetKey(KeyCode.W)) {
+            rb2d.AddForce(Vector2.up * 5F);
         }
-
-        float likeness = ((Mathf.Sin(6.2F * bouncyTime) * (1F - bouncyTime)) / (bouncyTime / 2F)) / 12.4F;
-        float angleDifference = initAngle - finalAngle;
-
-        return finalAngle + (angleDifference * likeness);
+        if (Input.GetKey(KeyCode.A)) {
+            rb2d.AddForce(Vector2.left * 5F);
+        }
+        if (Input.GetKey(KeyCode.S)) {
+            rb2d.AddForce(Vector2.down * 5F);
+        }
+        if (Input.GetKey(KeyCode.D)) {
+            rb2d.AddForce(Vector2.right * 5F);
+        }
     }
 }
