@@ -63,6 +63,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Player\Player_Manager.cs" />
     <Compile Include="Assets\Scripts\Player\test.cs" />
+    <Compile Include="Assets\Scripts\Player\Weapon_Manager.cs" />
+    <Compile Include="Assets\Scripts\Prefabs\Explosion.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/matta/Documents/GitHub/2D_Space_Shooter/2D_Space_Shooter/Unity_Project/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
