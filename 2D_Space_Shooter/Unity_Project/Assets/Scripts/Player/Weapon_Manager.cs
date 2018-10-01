@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum weaponType {LaserChargeShot, ProjectileLaser};
 public class Weapon_Manager : MonoBehaviour {
 
     public Animator animator;
@@ -12,11 +13,17 @@ public class Weapon_Manager : MonoBehaviour {
 
     public GameObject laser;
 
+    public weaponType currentWeapon = weaponType.LaserChargeShot;
+
+    public void Start() {
+
+    }
+
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+
+        /*if (Input.GetKeyDown(KeyCode.Mouse0)) { //InstLaser
             animator.SetTrigger("LaserChargeShot");
-            fireInstLaser();
-        }
+        }*/
     }
 
     public void fireInstLaser() {
@@ -30,7 +37,9 @@ public class Weapon_Manager : MonoBehaviour {
 
         if (hit) {
             laserEnd = hit.point;
-         //   Instantiate(explosionPrefab, laserEnd, Quaternion.identity);
+            Instantiate(explosionPrefab, laserEnd, Quaternion.identity);
+            //In the future plan to have different weapons sendmessage with damage parameter. Can make global to make balancing easier
+            hit.transform.gameObject.SendMessage("hit");
         } else {
             laserEnd = (spaceShip.transform.position - new Vector3(mousePos.x, mousePos.y)) * -5F;
         }

@@ -12,6 +12,8 @@ public class Player_Manager : MonoBehaviour {
     private Rigidbody2D rb2d;
     private float shipBounds;
 
+    public Animator uiAnimate;
+
     private void Start() {
         rb2d = GetComponent<Rigidbody2D>();
 
@@ -62,6 +64,14 @@ public class Player_Manager : MonoBehaviour {
         }
         if (Input.GetKey(KeyCode.D)) {
             rb2d.AddForce(Vector2.right * 5F);
+        }
+
+        //Getting input for controls
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            uiAnimate.SetTrigger("ShiftLeft");
+        }
+        if (Input.GetKeyDown(KeyCode.E)) {
+            uiAnimate.SetTrigger("ShiftRight");
         }
     }
 }
