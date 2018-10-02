@@ -21,9 +21,9 @@ public class Weapon_Manager : MonoBehaviour {
 
     private void Update() {
 
-        /*if (Input.GetKeyDown(KeyCode.Mouse0)) { //InstLaser
+        if (Input.GetKeyDown(KeyCode.Mouse0)) { //InstLaser
             animator.SetTrigger("LaserChargeShot");
-        }*/
+        }
     }
 
     public void fireInstLaser() {
