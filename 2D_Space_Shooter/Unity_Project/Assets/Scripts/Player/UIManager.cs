@@ -61,13 +61,10 @@ public class UIManager : MonoBehaviour {
     public void shiftRight() {
         if (selectedWeapon < (images.Length - 1)) {
 
-            wepSwitch.GetChild(0).GetComponent<Image>().sprite = images[selectedWeapon - 1];    // 0
-            wepSwitch.GetChild(1).GetComponent<Image>().sprite = images[selectedWeapon];        // 1
-            wepSwitch.GetChild(3).GetComponent<Image>().sprite = images[selectedWeapon + 1];    // 2
-            if (selectedWeapon > (images.Length - 3)) {
-                wepSwitch.GetChild(2).GetComponent<Image>().sprite = images[0];    // 3 
+            if (selectedWeapon >= (images.Length - 2)) { //Remember that images[0] is the end
+                wepSwitch.GetChild(0).GetComponent<Image>().sprite = images[0];
             } else {
-                wepSwitch.GetChild(2).GetComponent<Image>().sprite = images[selectedWeapon + 2];    // 3
+                wepSwitch.GetChild(0).GetComponent<Image>().sprite = images[selectedWeapon + 2];
             }
 
             selectedWeapon++;
