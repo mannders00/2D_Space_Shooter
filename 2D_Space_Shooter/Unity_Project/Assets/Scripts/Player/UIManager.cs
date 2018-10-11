@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour {
     public Transform wepSwitch;
     public Sprite[] images = new Sprite[6];
 
-    int selectedWeapon = 5;
+    int selectedWeapon = 1;
 
     public float hideDelay;
     bool hid = true;
@@ -18,20 +18,6 @@ public class UIManager : MonoBehaviour {
 
         if(Time.time > hideTime) {
         //    GetComponent<Animator>().SetTrigger()
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            shiftRight();   
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            shiftLeft();
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow)) {
-            GetComponent<Animator>().SetTrigger("Unhide");
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow)) {
-            GetComponent<Animator>().SetTrigger("Hide");
         }
 
         if(Time.time > hideTime && !hid) {

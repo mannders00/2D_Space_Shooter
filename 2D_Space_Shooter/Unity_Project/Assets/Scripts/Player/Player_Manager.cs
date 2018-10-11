@@ -14,11 +14,17 @@ public class Player_Manager : MonoBehaviour {
 
     public Animator uiAnimate;
 
+    [Header("Scripts")]
+    public Weapon_Manager wepManager;
+    public UIManager uiManager;
+
     private void Start() {
         rb2d = GetComponent<Rigidbody2D>();
 
         Camera cam = Camera.main; //87.5
         shipBounds = Mathf.Abs(cam.ScreenToWorldPoint(new Vector3(50F, 0)).x);
+
+
     }
 
     float lastPointAngle;
@@ -72,6 +78,21 @@ public class Player_Manager : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.E)) {
             uiAnimate.SetTrigger("ShiftRight");
+        }
+
+        //Fire
+        if (Input.GetKeyDown(KeyCode.Mouse0)) { //InstLaser
+            wepManager.fire();
+        }
+
+        //UI Switching
+        if (Input.GetKeyDown(KeyCode.RightArrow)) {
+            uiManager.shiftRight();
+            wepManager.setWeapon(uiManager.getSelectedWeapon() - 1);
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+            uiManager.shiftLeft();
+            wepManager.setWeapon(uiManager.getSelectedWeapon() - 1);
         }
     }
 }

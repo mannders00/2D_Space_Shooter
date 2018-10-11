@@ -5580,13 +5580,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 773266a62cf841947b5d45ef0c1ca5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentWeapon: 0
   animator: {fileID: 1021351758}
   spaceShip: {fileID: 1333916227}
   cursor: {fileID: 373469744}
   explosionPrefab: {fileID: 1325996031855064, guid: 818842a668a466f40839b24535f50641,
     type: 2}
   laser: {fileID: 1002826813}
-  currentWeapon: 0
+  projectileLaserPrefab: {fileID: 1996203895952326, guid: 599f2940a5e3df74892f0b142ebd34d1,
+    type: 2}
 --- !u!1 &1034170949
 GameObject:
   m_ObjectHideFlags: 0
@@ -6103,6 +6105,8 @@ MonoBehaviour:
   lookAtSpeed: 7.5
   cursor: {fileID: 373469742}
   uiAnimate: {fileID: 1846194421}
+  wepManager: {fileID: 1021351759}
+  uiManager: {fileID: 1846194422}
 --- !u!50 &1333916231
 Rigidbody2D:
   serializedVersion: 4

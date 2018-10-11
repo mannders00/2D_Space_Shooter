@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class DestructibleObject : MonoBehaviour {
 
-	public void hit() {
+    //GameObject explosionPrefab;
+
+    public void hit() {
+    //    Instantiate(explosionPrefab, laserEnd, Quaternion.identity);
         Destroy(gameObject);
     }
 }
