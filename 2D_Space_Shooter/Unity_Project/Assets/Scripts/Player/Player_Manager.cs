@@ -72,25 +72,17 @@ public class Player_Manager : MonoBehaviour {
             rb2d.AddForce(Vector2.right * 5F);
         }
 
-        //Getting input for controls
-        if (Input.GetKeyDown(KeyCode.Q)) {
-            uiAnimate.SetTrigger("ShiftLeft");
-        }
-        if (Input.GetKeyDown(KeyCode.E)) {
-            uiAnimate.SetTrigger("ShiftRight");
-        }
-
         //Fire
         if (Input.GetKeyDown(KeyCode.Mouse0)) { //InstLaser
             wepManager.fire();
         }
 
         //UI Switching
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
+        if (Input.GetKeyDown(KeyCode.E)) {
             uiManager.shiftRight();
             wepManager.setWeapon(uiManager.getSelectedWeapon() - 1);
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+        if (Input.GetKeyDown(KeyCode.Q)) {
             uiManager.shiftLeft();
             wepManager.setWeapon(uiManager.getSelectedWeapon() - 1);
         }

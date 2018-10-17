@@ -15,6 +15,7 @@ public class ProjectileLaser : MonoBehaviour {
 	}
 
     private void OnTriggerEnter2D(Collider2D other) {
-        other.transform.gameObject.SendMessage("hit");
+        other.transform.gameObject.SendMessage("hit", SendMessageOptions.DontRequireReceiver);
+        Object.Destroy(gameObject);
     }
 }
