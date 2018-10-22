@@ -7,7 +7,7 @@ public class Player_Manager : MonoBehaviour {
     [Header("Movement")]
     public float lookAtSpeed = 1;
 
-    public GameObject cursor;
+    public Texture2D cursor;
 
     private Rigidbody2D rb2d;
     private float shipBounds;
@@ -24,15 +24,15 @@ public class Player_Manager : MonoBehaviour {
         Camera cam = Camera.main; //87.5
         shipBounds = Mathf.Abs(cam.ScreenToWorldPoint(new Vector3(50F, 0)).x);
 
-
+        Cursor.SetCursor(cursor, new Vector2(72, 72), CursorMode.Auto);
     }
 
     float lastPointAngle;
     void Update () {
 
-        //Setting cursor position
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        cursor.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+        //Setting cursor position (using Cursor.SetCursor instead)
+        //Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //cursor.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
 
         //Setting camera position
         Camera.main.transform.position = new Vector3(0, transform.position.y, -10);
