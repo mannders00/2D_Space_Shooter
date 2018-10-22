@@ -14,11 +14,10 @@ public class MoveToAvoid : MonoBehaviour {
     Vector3 rayRightAngle;
     Vector3 rayRightSide;
 
-    float magnitude = 1.5F;
-    float sideLength = 0.75F;
+    float magnitude = 2F;
+    float sideLength = 1F;
     float width = 0.25F;
-    float rayAngle = 50F;
-    float rotateSensitivity = 40;
+    float rayAngle = 45F;
 
     private void setupRays() {
         Vector3 pos = transform.position;
@@ -58,19 +57,19 @@ public class MoveToAvoid : MonoBehaviour {
             Debug.DrawRay(hit.point, Vector3.Cross(norm, -transform.forward), Color.red);
         }*/
 
-        if (Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F)) { // print("rayLeftAngle");
+        if (Physics2D.Raycast(transform.position, rayLeftSide, sideLength)) { // print("rayLefSide");
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward);
+            hitTangent = Vector3.Cross(Physics2D.Raycast(transform.position, rayLeftSide, sideLength).normal, transform.forward);
 
-            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward), Color.red);
-        }
-        if (Physics2D.Raycast(rayLeft, rayMiddle, magnitude)) { // print("rayLeft");
+           // Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayLeftSide, sideLength).normal, transform.forward), Color.red);
+        } 
+        else if (Physics2D.Raycast(transform.position, rayRightSide, sideLength)) { // print("rayRightSide");
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward);
+            hitTangent = Vector3.Cross(Physics2D.Raycast(transform.position, rayRightSide, sideLength).normal, -transform.forward);
 
-            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward), Color.red);
+           // Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward), Color.red);
         }
         else if (Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude)) { // print("rayLeftAngle");
 
@@ -79,6 +78,20 @@ public class MoveToAvoid : MonoBehaviour {
 
             Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward), Color.red);
         }
+        else if (Physics2D.Raycast(rayRight, rayRightAngle, magnitude)) { // print("rayRightAngle");
+
+            hasToAvoid = true;
+            hitTangent = Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward);
+
+            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward), Color.red);
+        } 
+        else if (Physics2D.Raycast(rayLeft, rayMiddle, magnitude)) { // print("rayLeft");
+
+            hasToAvoid = true;
+            hitTangent = Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward);
+
+            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward), Color.red);
+        }
         else if (Physics2D.Raycast(rayRight, rayMiddle, magnitude)) { // print("rayRight");
 
             hasToAvoid = true;
@@ -86,17 +99,17 @@ public class MoveToAvoid : MonoBehaviour {
 
             Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayMiddle, magnitude).normal, -transform.forward), Color.red);
         }
-        else if (Physics2D.Raycast(rayRight, rayRightAngle, magnitude)) { // print("rayRightAngle");
+        else if (Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F)) { // print("rayMiddle");
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward);
+            hitTangent = Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward);
 
-            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward), Color.red);
+            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward), Color.red);
         }
 
-        if (Physics2D.Raycast(transform.position, rayLeftSide, sideLength) || Physics2D.Raycast(transform.position, rayRightSide, sideLength)) { //if there is something touching the side raycast, it shoudln't look towards the player it should go forward
+        /*if (Physics2D.Raycast(transform.position, rayLeftSide, sideLength) || Physics2D.Raycast(transform.position, rayRightSide, sideLength)) { //if there is something touching the side raycast, it shoudln't look towards the player it should go forward
             hasToAvoid = true;
-        }
+        }*/
         
         //Debug.DrawRay(transform.position, -transform.up, Color.green);
 
