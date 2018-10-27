@@ -6,13 +6,13 @@ public class MoveToAvoid : MonoBehaviour {
 
     public GameObject player;
 
-    Vector3 rayLeftSide;
-    Vector3 rayLeftAngle;
-    Vector3 rayLeft;
-    Vector3 rayMiddle;
-    Vector3 rayRight;
-    Vector3 rayRightAngle;
-    Vector3 rayRightSide;
+    Vector3 posLeftSide;
+    Vector3 posLeftAngle;
+    Vector3 posLeft;
+    Vector3 posMiddle;
+    Vector3 posRight;
+    Vector3 posRightAngle;
+    Vector3 posRightSide;
 
     public float chaseDistance;
     public float maxEnemyVelocity;
@@ -25,16 +25,16 @@ public class MoveToAvoid : MonoBehaviour {
     float width = 0.25F;
     float rayAngle = 45F;
 
-    private void setupRays() {
+    private void setupPos() {
         Vector3 pos = transform.position;
 
-        rayLeftSide = -transform.right * sideLength;
-        rayLeftAngle = Quaternion.Euler(new Vector3(0, 0, -rayAngle)) * -transform.up * magnitude;
-        rayLeft = transform.position + (-transform.right * width);
-        rayMiddle = -transform.up * magnitude;
-        rayRight = transform.position + (transform.right * width);
-        rayRightAngle = Quaternion.Euler(new Vector3(0, 0, rayAngle)) * -transform.up * magnitude;
-        rayRightSide = transform.right * sideLength;
+        posLeftSide = -transform.right * sideLength;
+        posLeftAngle = Quaternion.Euler(new Vector3(0, 0, -rayAngle)) * -transform.up * magnitude;
+        posLeft = transform.position + (-transform.right * width);
+        posMiddle = -transform.up * magnitude;
+        posRight = transform.position + (transform.right * width);
+        posRightAngle = Quaternion.Euler(new Vector3(0, 0, rayAngle)) * -transform.up * magnitude;
+        posRightSide = transform.right * sideLength;
     }
 
     // Update is called once per frame
@@ -51,74 +51,76 @@ public class MoveToAvoid : MonoBehaviour {
         }
         transform.position += -transform.up * Time.deltaTime * enemyVelocity;
 
-        setupRays();
         /*undo comments if curious what the rays look like
-        Debug.DrawRay(transform.position, rayLeftSide);
-        Debug.DrawRay(rayLeft, rayLeftAngle); //Left Angle
-        Debug.DrawRay(rayLeft, rayMiddle); //Left Straight
-        Debug.DrawRay(transform.position, rayMiddle * 1.1F); //Middle
-        Debug.DrawRay(rayRight, rayMiddle); //Right Straight
-        Debug.DrawRay(rayRight, rayRightAngle); //Right Angle
-        Debug.DrawRay(transform.position, rayRightSide);
+        Debug.DrawRay(transform.position, posLeftSide);
+        Debug.DrawRay(posLeft, posLeftAngle); //Left Angle
+        Debug.DrawRay(posLeft, posMiddle); //Left Straight
+        Debug.DrawRay(transform.position, posMiddle * 1.1F); //Middle
+        Debug.DrawRay(posRight, posMiddle); //Right Straight
+        Debug.DrawRay(posRight, posRightAngle); //Right Angle
+        Debug.DrawRay(transform.position, posRightSide);
         */
 
 
         bool hasToAvoid = false;
         RaycastHit2D hit = new RaycastHit2D();
-
         Vector3 hitTangent = Vector3.zero;
 
-        
 
-        if (Physics2D.Raycast(transform.position, rayLeftSide, sideLength)) { // print("rayLefSide");
+        setupPos(); //This sets up the starting points of ecah ray that we will be casting now
+
+        //This sets up all the rays. I do it here because I use them multiple times in the if statements,
+        //And it's more concise to define them here. It should be easier to visualize as well.
+        RaycastHit2D rayLeftSide = Physics2D.Raycast(transform.position, posLeftSide, sideLength);
+        RaycastHit2D rayRightSide = Physics2D.Raycast(transform.position, posRightSide, sideLength);
+        RaycastHit2D rayLeftAngle = Physics2D.Raycast(posLeft, posLeftAngle, magnitude);
+        RaycastHit2D rayRightAngle = Physics2D.Raycast(posRight, posRightAngle, magnitude);
+        RaycastHit2D rayLeft = Physics2D.Raycast(posLeft, posMiddle, magnitude);
+        RaycastHit2D rayRight = Physics2D.Raycast(posRight, posMiddle, magnitude);
+        RaycastHit2D rayMiddle = Physics2D.Raycast(transform.position, posMiddle, magnitude * 1.1F);
+
+        if (rayLeftSide) {
 
             hasToAvoid = true;
-            hit = Physics2D.Raycast(transform.position, rayLeftSide, sideLength);
+            hit = rayLeftSide;
             hitTangent = Vector3.Cross(hit.normal, transform.forward);
 
             Vector3 safePos = transform.position + (new Vector3(hit.normal.x, hit.normal.y) * sideLength);
             transform.position = Vector3.Lerp(transform.position, safePos, Time.deltaTime);
-            // Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayLeftSide, sideLength).normal, transform.forward), Color.red);
         } 
-        else if (Physics2D.Raycast(transform.position, rayRightSide, sideLength)) { // print("rayRightSide");
+        else if (rayRightSide) {
 
             hasToAvoid = true;
-            hit = Physics2D.Raycast(transform.position, rayRightSide, sideLength);
+            hit = rayRightSide;
             hitTangent = Vector3.Cross(hit.normal, -transform.forward);
 
             Vector3 safePos = transform.position + (new Vector3(hit.normal.x, hit.normal.y) * sideLength);
             transform.position = Vector3.Lerp(transform.position, safePos, Time.deltaTime);
-            // Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward), Color.red);
         }
-        else if (Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude)) { // print("rayLeftAngle");
+        if (rayLeftAngle) {
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward);
-            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward), Color.red);
+            hitTangent = Vector3.Cross(rayLeftAngle.normal, transform.forward);
         }
-        else if (Physics2D.Raycast(rayRight, rayRightAngle, magnitude)) { // print("rayRightAngle");
+        else if (rayRightAngle) {
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward);
-            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward), Color.red);
+            hitTangent = Vector3.Cross(rayRightAngle.normal, -transform.forward);
         } 
-        else if (Physics2D.Raycast(rayLeft, rayMiddle, magnitude)) { // print("rayLeft");
+        else if (rayLeft) {
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward);
-            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward), Color.red);
+            hitTangent = Vector3.Cross(rayLeft.normal, transform.forward);
         }
-        else if (Physics2D.Raycast(rayRight, rayMiddle, magnitude)) { // print("rayRight");
+        else if (rayRight) {
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(rayRight, rayMiddle, magnitude).normal, -transform.forward);
-            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayMiddle, magnitude).normal, -transform.forward), Color.red);
+            hitTangent = Vector3.Cross(rayRight.normal, -transform.forward);
         }
-        else if (Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F)) { // print("rayMiddle");
+        else if (rayMiddle) {
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward);
-            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward), Color.red);
+            hitTangent = Vector3.Cross(rayMiddle.normal, -transform.forward);
         }
 
         float rotZ = Mathf.Atan2(player.transform.position.y - transform.position.y, player.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
