@@ -14,8 +14,14 @@ public class MoveToAvoid : MonoBehaviour {
     Vector3 rayRightAngle;
     Vector3 rayRightSide;
 
-    float magnitude = 2F;
-    float sideLength = 1F;
+    public float chaseDistance;
+    public float maxEnemyVelocity;
+    float enemyVelocity;
+
+    public GameObject enemy;
+
+    public float magnitude = 2F;
+    float sideLength = .75F;
     float width = 0.25F;
     float rayAngle = 45F;
 
@@ -34,9 +40,19 @@ public class MoveToAvoid : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        transform.position += -transform.up * Time.deltaTime * 2F;
+        enemy.transform.position = transform.position;
+        transform.position = enemy.transform.position;
+
+        
+        if (Vector3.Distance(transform.position, player.transform.position) > chaseDistance) {
+            enemyVelocity = Mathf.Lerp(enemyVelocity, maxEnemyVelocity, Time.deltaTime * 2);
+        } else {
+            enemyVelocity = Mathf.Lerp(enemyVelocity, 0, Time.deltaTime * 2);
+        }
+        transform.position += -transform.up * Time.deltaTime * enemyVelocity;
 
         setupRays();
+        /*undo comments if curious what the rays look like
         Debug.DrawRay(transform.position, rayLeftSide);
         Debug.DrawRay(rayLeft, rayLeftAngle); //Left Angle
         Debug.DrawRay(rayLeft, rayMiddle); //Left Straight
@@ -44,80 +60,80 @@ public class MoveToAvoid : MonoBehaviour {
         Debug.DrawRay(rayRight, rayMiddle); //Right Straight
         Debug.DrawRay(rayRight, rayRightAngle); //Right Angle
         Debug.DrawRay(transform.position, rayRightSide);
+        */
+
 
         bool hasToAvoid = false;
         RaycastHit2D hit = new RaycastHit2D();
 
         Vector3 hitTangent = Vector3.zero;
 
-        /*if(Physics2D.Raycast(rayRight, rayRightAngle, magnitude)) {  //print("rayMiddle");
-            hit = Physics2D.Raycast(rayRight, rayRightAngle, magnitude);
-            Vector3 norm = hit.normal;
-            //avoidRot = Quaternion.Euler(new Vector3(norm.x, norm.y, norm.z - 90));
-            Debug.DrawRay(hit.point, Vector3.Cross(norm, -transform.forward), Color.red);
-        }*/
+        
 
         if (Physics2D.Raycast(transform.position, rayLeftSide, sideLength)) { // print("rayLefSide");
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(transform.position, rayLeftSide, sideLength).normal, transform.forward);
+            hit = Physics2D.Raycast(transform.position, rayLeftSide, sideLength);
+            hitTangent = Vector3.Cross(hit.normal, transform.forward);
 
-           // Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayLeftSide, sideLength).normal, transform.forward), Color.red);
+            Vector3 safePos = transform.position + (new Vector3(hit.normal.x, hit.normal.y) * sideLength);
+            transform.position = Vector3.Lerp(transform.position, safePos, Time.deltaTime);
+            // Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayLeftSide, sideLength).normal, transform.forward), Color.red);
         } 
         else if (Physics2D.Raycast(transform.position, rayRightSide, sideLength)) { // print("rayRightSide");
 
             hasToAvoid = true;
-            hitTangent = Vector3.Cross(Physics2D.Raycast(transform.position, rayRightSide, sideLength).normal, -transform.forward);
+            hit = Physics2D.Raycast(transform.position, rayRightSide, sideLength);
+            hitTangent = Vector3.Cross(hit.normal, -transform.forward);
 
-           // Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward), Color.red);
+            Vector3 safePos = transform.position + (new Vector3(hit.normal.x, hit.normal.y) * sideLength);
+            transform.position = Vector3.Lerp(transform.position, safePos, Time.deltaTime);
+            // Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward), Color.red);
         }
         else if (Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude)) { // print("rayLeftAngle");
 
             hasToAvoid = true;
             hitTangent = Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward);
-
-            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward), Color.red);
+            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayLeftAngle, magnitude).normal, transform.forward), Color.red);
         }
         else if (Physics2D.Raycast(rayRight, rayRightAngle, magnitude)) { // print("rayRightAngle");
 
             hasToAvoid = true;
             hitTangent = Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward);
-
-            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward), Color.red);
+            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayRightAngle, magnitude).normal, -transform.forward), Color.red);
         } 
         else if (Physics2D.Raycast(rayLeft, rayMiddle, magnitude)) { // print("rayLeft");
 
             hasToAvoid = true;
             hitTangent = Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward);
-
-            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward), Color.red);
+            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayLeft, rayMiddle, magnitude).normal, transform.forward), Color.red);
         }
         else if (Physics2D.Raycast(rayRight, rayMiddle, magnitude)) { // print("rayRight");
 
             hasToAvoid = true;
             hitTangent = Vector3.Cross(Physics2D.Raycast(rayRight, rayMiddle, magnitude).normal, -transform.forward);
-
-            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayMiddle, magnitude).normal, -transform.forward), Color.red);
+            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(rayRight, rayMiddle, magnitude).normal, -transform.forward), Color.red);
         }
         else if (Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F)) { // print("rayMiddle");
 
             hasToAvoid = true;
             hitTangent = Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward);
-
-            Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward), Color.red);
+            //Debug.DrawRay(hit.point, Vector3.Cross(Physics2D.Raycast(transform.position, rayMiddle, magnitude * 1.1F).normal, -transform.forward), Color.red);
         }
 
-        /*if (Physics2D.Raycast(transform.position, rayLeftSide, sideLength) || Physics2D.Raycast(transform.position, rayRightSide, sideLength)) { //if there is something touching the side raycast, it shoudln't look towards the player it should go forward
-            hasToAvoid = true;
-        }*/
-        
-        //Debug.DrawRay(transform.position, -transform.up, Color.green);
+        float rotZ = Mathf.Atan2(player.transform.position.y - transform.position.y, player.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
 
         if (!hasToAvoid) {
-            float rotZ = Mathf.Atan2(player.transform.position.y - transform.position.y, player.transform.position.x - transform.position.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, rotZ + 90)), Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, rotZ + 90)), Time.deltaTime * 2);
         }else{
-            transform.rotation = Quaternion.Slerp(transform.rotation, (Quaternion.FromToRotation(-transform.up, hitTangent) * transform.rotation), Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, (Quaternion.FromToRotation(-transform.up, hitTangent) * transform.rotation), Time.deltaTime * 2);
         }
+
+        enemy.transform.rotation = Quaternion.Lerp(enemy.transform.rotation, Quaternion.Euler(0, 0, rotZ + 90), Time.deltaTime * 2);
+    }
+
+    public void hit() {
+        //    Instantiate(explosionPrefab, laserEnd, Quaternion.identity);
+        Destroy(transform.parent.gameObject);
     }
 }
