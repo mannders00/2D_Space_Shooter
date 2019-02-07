@@ -5,6 +5,7 @@ using UnityEngine;
 public class MoveToAvoid : MonoBehaviour {
 
     public GameObject player;
+    public float maxSpeed = 1;
 
     Vector3 posLeftSide;
     Vector3 posLeftAngle;
@@ -20,10 +21,10 @@ public class MoveToAvoid : MonoBehaviour {
 
     public GameObject enemy;
 
-    public float magnitude = 2F;
-    float sideLength = .75F;
-    float width = 0.25F;
-    float rayAngle = 45F;
+    public float magnitude = 2F; //How far the detectors reach
+    float sideLength = .75F; //How far the side barriers reach
+    float width = 0.25F; //How far apart the secondary origins are from the center
+    float rayAngle = 45F; //Angle of angled rays
 
     private void setupPos() {
         Vector3 pos = transform.position;
@@ -49,9 +50,9 @@ public class MoveToAvoid : MonoBehaviour {
         } else {
             enemyVelocity = Mathf.Lerp(enemyVelocity, 0, Time.deltaTime * 2);
         }
-        transform.position += -transform.up * Time.deltaTime * enemyVelocity;
+        transform.position += -transform.up * Time.deltaTime * enemyVelocity * maxSpeed;
 
-        /*undo comments if curious what the rays look like
+        //undo comments if curious what the rays look like
         Debug.DrawRay(transform.position, posLeftSide);
         Debug.DrawRay(posLeft, posLeftAngle); //Left Angle
         Debug.DrawRay(posLeft, posMiddle); //Left Straight
@@ -59,7 +60,7 @@ public class MoveToAvoid : MonoBehaviour {
         Debug.DrawRay(posRight, posMiddle); //Right Straight
         Debug.DrawRay(posRight, posRightAngle); //Right Angle
         Debug.DrawRay(transform.position, posRightSide);
-        */
+        
 
 
         bool hasToAvoid = false;
@@ -71,6 +72,9 @@ public class MoveToAvoid : MonoBehaviour {
 
         //This sets up all the rays. I do it here because I use them multiple times in the if statements,
         //And it's more concise to define them here. It should be easier to visualize as well.
+
+        RaycastHit2D rayMiddleShort = Physics2D.Raycast(transform.position, -transform.up, sideLength);
+
         RaycastHit2D rayLeftSide = Physics2D.Raycast(transform.position, posLeftSide, sideLength);
         RaycastHit2D rayRightSide = Physics2D.Raycast(transform.position, posRightSide, sideLength);
         RaycastHit2D rayLeftAngle = Physics2D.Raycast(posLeft, posLeftAngle, magnitude);
@@ -79,6 +83,24 @@ public class MoveToAvoid : MonoBehaviour {
         RaycastHit2D rayRight = Physics2D.Raycast(posRight, posMiddle, magnitude);
         RaycastHit2D rayMiddle = Physics2D.Raycast(transform.position, posMiddle, magnitude * 1.1F);
 
+        /*for(int i = 0; i < circleOverlap.Length; i++) {
+            if(circleOverlap[i].transform.gameObject != transform.gameObject) {
+
+                Vector3 safePos =  ;
+                circleOverlap[i].transform.position = Vector3.Lerp(circleOverlap[i].transform.position, safePos, Time.deltaTime);
+            }
+        }*/
+
+        //Simply making sure it doesn't go into anything
+
+        if (rayMiddleShort) {
+            hasToAvoid = true;
+            hit = rayMiddleShort;
+
+            hitTangent = Vector3.Cross(hit.normal, transform.forward);
+            Vector3 safePos = transform.position + (new Vector3(hit.normal.x, hit.normal.y) * sideLength);
+            transform.position = Vector3.Lerp(transform.position, safePos, Time.deltaTime * 2F);
+        }
         if (rayLeftSide) {
 
             hasToAvoid = true;
@@ -88,7 +110,7 @@ public class MoveToAvoid : MonoBehaviour {
             Vector3 safePos = transform.position + (new Vector3(hit.normal.x, hit.normal.y) * sideLength);
             transform.position = Vector3.Lerp(transform.position, safePos, Time.deltaTime);
         } 
-        else if (rayRightSide) {
+        if (rayRightSide) {
 
             hasToAvoid = true;
             hit = rayRightSide;

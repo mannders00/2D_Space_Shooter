@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 
+    public Player_Manager player;
+
     public Transform wepSwitch;
     public Sprite[] images = new Sprite[6];
 
@@ -13,6 +15,9 @@ public class UIManager : MonoBehaviour {
     public float hideDelay;
     bool hid = true;
     float hideTime;
+
+    public RectTransform healthFG;
+    public RectTransform healthBG;
 
     private void Update() {
 
@@ -24,9 +29,16 @@ public class UIManager : MonoBehaviour {
             hid = true;
             GetComponent<Animator>().SetTrigger("Hide");
         }
+        updateHealthBars();
     }
     void Start() {
         updateWeaponUI();
+    }
+
+    public void updateHealthBars(){
+        float newSize = (player.health / 100F) * (healthBG.sizeDelta.x);
+        healthFG.sizeDelta = new Vector2(newSize, healthFG.sizeDelta.y);
+        healthFG.anchoredPosition = new Vector2((newSize / 2F) - (healthBG.sizeDelta.x / 2), healthFG.anchoredPosition.y);
     }
 
     public int getSelectedWeapon() {

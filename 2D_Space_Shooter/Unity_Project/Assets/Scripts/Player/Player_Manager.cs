@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Player_Manager : MonoBehaviour {
 
+    [Header("Stats")]
+    public int health = 100;
+
     [Header("Movement")]
     public float lookAtSpeed = 1;
 
@@ -26,6 +29,7 @@ public class Player_Manager : MonoBehaviour {
 
         Cursor.SetCursor(cursor, new Vector2(72, 72), CursorMode.Auto);
     }
+
 
     float lastPointAngle;
     void Update () {
