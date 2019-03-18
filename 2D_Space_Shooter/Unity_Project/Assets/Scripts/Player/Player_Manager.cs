@@ -8,12 +8,13 @@ public class Player_Manager : MonoBehaviour {
     public int health = 100;
 
     [Header("Movement")]
+    public float moveSpeed = 1F;
     public float lookAtSpeed = 1;
 
     public Texture2D cursor;
-
     private Rigidbody2D rb2d;
-    private float shipBounds;
+
+    private Vector3 velocity;
 
     public Animator uiAnimate;
 
@@ -25,7 +26,6 @@ public class Player_Manager : MonoBehaviour {
         rb2d = GetComponent<Rigidbody2D>();
 
         Camera cam = Camera.main; //87.5
-        shipBounds = Mathf.Abs(cam.ScreenToWorldPoint(new Vector3(50F, 0)).x);
 
         Cursor.SetCursor(cursor, new Vector2(72, 72), CursorMode.Auto);
     }
@@ -34,17 +34,16 @@ public class Player_Manager : MonoBehaviour {
     float lastPointAngle;
     void Update () {
 
-        //Setting cursor position (using Cursor.SetCursor instead)
-        //Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //cursor.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+        //Slerping camera position
+        Vector3 targetPos = new Vector3(transform.position.x, transform.position.y, -10);
+        Camera.main.transform.position = Vector3.Slerp(Camera.main.transform.position, targetPos, Time.deltaTime * 5);
 
-        //Setting camera position
-        Camera.main.transform.position = new Vector3(0, transform.position.y, -10);
-
-        //Clamping the bounds
+        /* Don't use this method anymore, at the moment do not have side bounds but may re-implement in the future
+        Clamping the bounds
         Vector3 pos = transform.position;
         pos.x = Mathf.Clamp(pos.x, -shipBounds, shipBounds);
         transform.position = pos;
+        */
 
         //Using trig to find the angle between two points (spaceship and mouse cursor)
         float adj = Input.mousePosition.x - (Camera.main.WorldToScreenPoint(transform.position).x);
@@ -64,16 +63,16 @@ public class Player_Manager : MonoBehaviour {
 
         //WASD Movement
         if (Input.GetKey(KeyCode.W)) {
-            rb2d.AddForce(Vector2.up * 5F);
+            rb2d.AddForce(Vector2.up * moveSpeed);
         }
         if (Input.GetKey(KeyCode.A)) {
-            rb2d.AddForce(Vector2.left * 5F);
+            rb2d.AddForce(Vector2.left * moveSpeed);
         }
         if (Input.GetKey(KeyCode.S)) {
-            rb2d.AddForce(Vector2.down * 5F);
+            rb2d.AddForce(Vector2.down * moveSpeed);
         }
         if (Input.GetKey(KeyCode.D)) {
-            rb2d.AddForce(Vector2.right * 5F);
+            rb2d.AddForce(Vector2.right * moveSpeed);
         }
 
         //Fire

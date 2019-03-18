@@ -521,6 +521,7 @@ GameObject:
   m_Component:
   - component: {fileID: 319096105}
   - component: {fileID: 319096104}
+  - component: {fileID: 319096106}
   m_Layer: 0
   m_Name: EnemyObject
   m_TagString: Untagged
@@ -558,6 +559,21 @@ Transform:
   m_Father: {fileID: 876894723}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 47.211002}
+--- !u!58 &319096106
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 319096103}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!1 &373469742
 GameObject:
   m_ObjectHideFlags: 0
@@ -5713,7 +5729,6 @@ GameObject:
   m_Component:
   - component: {fileID: 876894723}
   - component: {fileID: 876894722}
-  - component: {fileID: 876894724}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -5781,21 +5796,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 47.211002}
---- !u!58 &876894724
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 876894721}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.20000002
 --- !u!1 &996657243
 GameObject:
   m_ObjectHideFlags: 0
@@ -6444,6 +6444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  moveSpeed: 5
   lookAtSpeed: 7.5
   cursor: {fileID: 2800000, guid: bcbed12ebe5470e45bd1f90f015dc9d5, type: 3}
   uiAnimate: {fileID: 1846194421}
@@ -6462,7 +6463,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 0.5
   m_LinearDrag: 1
-  m_AngularDrag: 0
+  m_AngularDrag: 1
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
